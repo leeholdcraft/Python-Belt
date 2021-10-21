@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+        <div style="margin: 50px;">
+            <h2>Welcome, {{session['username']}} you've been logged in!</h2><form action="/logout" method="POST"><button class="btn btn-primary">Logout</button></form>
+        <div style="display: inline-block; width: 500px; height: auto; margin: 30px">
+            <div style="display: inline-block; vertical-align: top; width: 400px; height: auto; margin: 30px;">
+                <form action='/add_thought' method='POST'>
+                    <div class="form-group">
+                        <label for="my_thoughts"> Leave a thought here: </label>
+                        <textarea name="text" class="form-control" id="messages" rows="2"></textarea>
+                        <button>Submit thought</button>
+                    </div>
+                </form>
+            </div>
+            <div class="list-group">
+                {% for user in thoughts %}
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"><a href="/show/{{user['users_id']}}">{{user['first_name']}}</a> says: </h5>
+                </div>
+                    <p class="mb-1">{{user['text']}}</p>
+                    <form action="/thoughts/{{ user['id'] }}/delete" method="POST">
+                        <input type="hidden" name="thoughts_id" value="{{ user['id']}}">
+                        <button class="btn btn-secondary">Delete</button>
+                    </form>
+                    <form action="/like/{{ user['id']}}" method="POST">
+                        <input type="hidden" name="text" value="{{user['id']}}">
+                        <button class="btn btn-primary">Like</button>
+                    </form>
+                    <form action="/unlike/{{ user['id']}}" method="POST">
+                        <input type="hidden" name="text" value="{{user['id']}}">
+                        <button class="btn btn-primary">Unlike</button>
+                    </form>
+                    {% for num in likes %}
+                    <h5>{{num['thoughts_id']}}</h5>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
